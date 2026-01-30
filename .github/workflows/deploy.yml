@@ -22,7 +22,7 @@ jobs:
           script: |
             cd /home/ubuntu
             if [ ! -d "secure-portfolio-app" ]; then
-              git clone https://github.com/YOUR_USERNAME/secure-portfolio-app.git
+              git clone https://github.com/blaxmankumar/fullstack-app.git
             fi
             cd secure-portfolio-app
             git pull
