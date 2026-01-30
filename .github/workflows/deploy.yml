@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -20,11 +17,20 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -e
+
             cd /home/ubuntu
-            if [ ! -d "secure-portfolio-app" ]; then
-              git clone https://github.com/blaxmankumar/fullstack-app.git
-            fi
-            cd secure-portfolio-app
-            git pull
-            docker compose down
-            docker compose up -d --build
+
+            # Remove old folder (clean deployment)
+            rm -rf fullstack-app
+
+            # Clone fresh copy
+            git clone https://github.com/blaxmankumar/fullstack-app.git
+
+            cd fullstack-app
+
+            # Stop old containers (ignore error if none running)
+            docker-compose down || true
+
+            # Build and start containers
+            docker-compose up -d --build
